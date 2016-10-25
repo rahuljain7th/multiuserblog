@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/style.css">
+    </head>
+    <body>
+        <header>
+            <h1>User Sign Up Form</h1>
+        </header>
+        <div class="container">
+            <form method="post" id="signupform" action="signup">
+                <label class="row">UserName:
+                    <div class="flex">
+                        <input type="text" class="userinputarea" name="username" value="{{output['username']}}">
+                        <span class="errorMsg">{{errormap['username']}}</span>
+                    </div>
+                </label>
+                <label class="row">Password:
+                    <div class="flex">
+                        <input type="password" class="userinputarea" name="password">
+                         <span class="errorMsg">{{errormap['password']}}</span>
+                    </div>
+                </label>
+                <label class="row">Confirm password:
+                <div class="flex">
+                    <input type="password" class="userinputarea" name="confirmpass">
+                     <span class="errorMsg">{{errormap['confirmpassword']}}</span>
+                    </div>
+                </label>
+                <label class="row">email(optional):
+                <div class="flex">
+                    <input type="email" class="userinputarea" name="email" value="{{output['email']}}">
+                    <span class="errorMsg">{{errormap['email']}}</span>
+                     </div>
+                </label>
+                 <label class="row">
+                <input class="button" id="loginsubmit" type="submit" name="submit">
+                </label>
+            </form>
+               <form method="GET"  action="/blog/login">
+            <input class="inputarea button" id="signupinput" type="submit" value="Login Here">
+
+            </form>
+        </div>
+    </body>
+</html>

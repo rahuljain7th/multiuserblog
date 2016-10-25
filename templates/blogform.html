@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/style.css">
+    </head>
+    <body>
+        <div class="container">
+            <div class="row title">
+                <h3>Add New Blog</h3>
+            </div>
+            <form method="Post">
+                <label class="row"> <p>Blog Title :</p>
+                    <div class="flex">
+                        <input class="blogInput" type="text" name="title">
+                        {% if error %}
+                            <span class="errorMsg">{{error.blogTitle}}</span>
+                        {% endif %}
+                    </div>
+                </label>
+                <label class="row"><p>Blog Description :</p>
+                    <div class="flex">
+                        <textarea class="blogDescInput" rows="20" cols="300" name="blogtext"></textarea>
+                        {% if error %}
+                            <span class="errorMsg">{{error.blogDescription}}</span>
+                        {% endif %}
+                    </div>
+                </label>
+                <label class="row">
+                    <input class="button" type="submit" name="submit">
+                </label>
+            </form>
+        </div>
+    </body>

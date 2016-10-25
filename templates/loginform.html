@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="../css/style.css">
+    </head>
+    <body>
+        <header>
+            <h1>User Login Form</h1>
+        </header>
+        <div class="container">
+            <form method="post" id="loginform" action="login">
+                <label class="row"><p>UserName:</p>
+                    <div class="flex">
+                        <input type="text" class="userinputarea" name="username" value="{{username}}">
+                    </div>
+                </label>
+                <label class="row"><p> Password: </p>
+                    <div class="flex">
+                        <input type="password" class="userinputarea" name="password">
+                        <div class="errorMsg" id="loginerror">{{invalidloginmsg}}</div>
+                    </div>
+
+                </label>
+
+                 <label class="row">
+                <input class="button" id="loginsubmit" type="submit" name="submit" value="Login">
+                </label>
+            </form>
+            <form method="GET"  action="/blog/signup">
+            <input class="inputarea button" id="signupinput" type="submit" value="Sign Up Here">
+
+            </form>
+
+        </div>
+    </body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Blogger</title>
+        <link rel="stylesheet" type="text/css" href="../css/style.css">
+    </head>
+    <body>
+        <header class="text-center">
+        <div class="logo">
+            <h1>Blogger</h1>
+            <p>(skills used : python,jinja2,googleDataStore,googleAppEngine)</p>
+            </div>
+
+            <div class="userform">
+            {% if not username %}
+            <form method="GET" action="/blog/signup">
+            <input class="inputarea button" type="submit" value="Sign Up">
+            </form>
+
+
+            <form method="GET" action="/blog/login">
+            <input class="inputarea button" type="submit" value="Login">
+            </form>
+            {% else %}
+             <h2>Welcome {{username}}</h2>
+            <form method="GET" action="/blog/myblogs">
+            <input class="inputarea button" type="submit" value="My Blogs">
+            </form>
+            <form method="GET" action="/blog/logout">
+            <input class="inputarea button" type="submit" value="Logout">
+            </form>
+            {% endif %}
+            {% if username %}
+                <form action="/blog/newpost">
+                <input class="inputarea button" type="submit" value="Post New Blog">
+                </form>
+                {% endif %}
+            </div>
+            <div style="clear: both;"></div>
+
+        </header>
+        <div class="container">
+                {% for blogData in blogAllData %}
+                    <article class="text-center">
+                        <div class="blogheader">
+                            <h3 class="blogTitle">{{blogData.blogTitle}}</h3>
+                            <p class="blogDate">{{blogData.created}}</p>
+                            <div style="clear: both;"></div>
+                        </div>
+                        <div class="blogDescription">
+                            {{blogData.blogDescription}}
+                        </div>
+                    </article>
+                {% endfor %}
+            <div>
+            </body>
+        </html>
