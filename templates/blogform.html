@@ -12,7 +12,7 @@
             <form method="Post">
                 <label class="row"> <p>Blog Title :</p>
                     <div class="flex">
-                        <input class="blogInput" type="text" name="title">
+                        <input class="blogInput" type="text" name="title" value="{{blogTitle}}">
                         {% if error %}
                             <span class="errorMsg">{{error.blogTitle}}</span>
                         {% endif %}
@@ -20,13 +20,14 @@
                 </label>
                 <label class="row"><p>Blog Description :</p>
                     <div class="flex">
-                        <textarea class="blogDescInput" rows="20" cols="300" name="blogtext"></textarea>
+                        <textarea class="blogDescInput" rows="20" cols="300" name="blogtext">{{blogDescription}}</textarea>
                         {% if error %}
                             <span class="errorMsg">{{error.blogDescription}}</span>
                         {% endif %}
                     </div>
                 </label>
                 <label class="row">
+                <input type="hidden" name="blogId" value="{{blogId}}">
                     <input class="button" type="submit" name="submit">
                 </label>
             </form>

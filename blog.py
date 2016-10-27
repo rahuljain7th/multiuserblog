@@ -63,6 +63,11 @@ class Handler(webapp2.RequestHandler):
             self.check_secure_val(cookie_val)
             return cookie_val
 
+    def getCookieValue(self,name):
+        cookie_val = self.request.cookies.get(name)
+        if cookie_val:
+            return self.check_secure_val(cookie_val)
+
     def login(self, user):
         self.set_secure_cookie('user_id', str(user.key().id()))
 
@@ -74,67 +79,6 @@ class Handler(webapp2.RequestHandler):
         user_id = self.check_secure_val(user_cookie)
         if user_id:
             return 'true'
-
-class BlogData(db.Model):
-    blogTitle = db.StringProperty(required=True)
-    blogDescription = db.TextProperty(required=True)
-    created = db.DateProperty(auto_now_add = True)
-
-class BlogFormHandler(Handler):
-
-    def get(self):
-        logging.info("Inside get method of BlogHandler")
-        if self.isvalid_login():
-            self.render("blogform.html")
-        else:
-            self.redirect('/blog/login')
-
-    def post(self):
-        logging.info("Inside Post method of BlogHandler")
-        blogTitle = self.request.get("title");
-        blogDescription = self.request.get("blogtext");
-        errorMap = {}
-        if not blogTitle:
-            errorMap['blogTitle'] = "Please Provide the Blog Title"
-        if not blogDescription:
-            errorMap['blogDescription'] = "Please Provide the Blog Decsription"
-        if blogTitle and blogDescription:
-            blogData = BlogData(blogTitle=blogTitle,blogDescription=blogDescription)
-            blogData.put()
-            blogId = str(blogData.key().id());
-            self.redirect('/blog/'+blogId)
-        else:
-            logging.info("Error While Submitting the Form %s",errorMap)
-            self.render('blogform.html',error=errorMap)
-
-
-
-class GetAllBlog(Handler):
-    def get(self):
-        blogAllData = db.GqlQuery("SELECT * FROM  BlogData ORDER BY created desc")
-        logging.info(blogAllData)
-        user_cookie = self.read_secure_cookie('user_id')
-        logging.debug("user_cookie %s",user_cookie)
-        user_id = self.check_secure_val(user_cookie)
-        logging.debug("user_id %s",user_id)
-        if user_id:
-            logging.info("user_cookie exists")
-            user = User.by_id(user_id)
-            self.render("index.html",blogAllData=blogAllData,username=user.username)
-        else:
-            logging.info("user_cookie doesnt not exists")
-            self.render("index.html",blogAllData=blogAllData)
-
-class GetBlogbyId(Handler):
-    """docstring for ClassName"""
-    def get(self, blogId):
-        logging.info("Inside Get method of GetBlogbyId")
-        #blogData = db.GqlQuery("SELECT * FROM  BlogData where blogId="+blogId)
-        blogData = BlogData.get_by_id(int(blogId))
-        blogAllData = []
-        blogAllData.append(blogData)
-        logging.info(blogAllData)
-        self.render("index.html",blogAllData=blogAllData)
 
 class User(db.Model):
     username = db.StringProperty(required=True)
@@ -164,6 +108,78 @@ class User(db.Model):
         u = cls.by_name(name)
         if u and valid_pw(name, pw, u.pass_hash):
             return u
+
+class BlogData(db.Model):
+    blogTitle = db.StringProperty(required=True)
+    blogDescription = db.TextProperty(required=True)
+    created = db.DateProperty(auto_now_add = True)
+    user = db.ReferenceProperty(User)
+
+    @classmethod
+    def by_id(cls,id):
+        blogData = BlogData.get_by_id(int(id))
+        return blogData;
+
+class BlogFormHandler(Handler):
+
+    def get(self):
+        logging.info("Inside get method of BlogHandler")
+        if self.isvalid_login():
+            self.render("blogform.html",blogData={})
+        else:
+            self.redirect('/blog/login')
+
+    def post(self):
+        user_id = self.getCookieValue("user_id")
+        user = User.get_by_id(int(user_id))
+        logging.info("Inside Post method of BlogHandler")
+        blogTitle = self.request.get("title");
+        blogDescription = self.request.get("blogtext");
+        errorMap = {}
+        if not (blogTitle and blogTitle.strip()):
+            errorMap['blogTitle'] = "Please Provide the Blog Title"
+        if not (blogDescription and blogDescription.strip()):
+            errorMap['blogDescription'] = "Please Provide the Blog Decsription"
+        if blogTitle and blogDescription:
+            blogData = BlogData(blogTitle=blogTitle,blogDescription=blogDescription,user=user)
+            blogData.put()
+            blogId = str(blogData.key().id());
+            self.redirect('/blog/'+blogId)
+        else:
+            logging.info("Error While Submitting the Form %s",errorMap)
+            self.render('blogform.html',error=errorMap,blogTitle=blogTitle,blogDescription=blogDescription)
+
+
+
+class GetAllBlog(Handler):
+    def get(self):
+        blogAllData = db.GqlQuery("SELECT * FROM  BlogData ORDER BY created desc")
+        logging.info(blogAllData)
+        user_cookie = self.read_secure_cookie('user_id')
+        logging.debug("user_cookie %s",user_cookie)
+        user_id = self.check_secure_val(user_cookie)
+        logging.debug("user_id %s",user_id)
+        if user_id:
+            logging.info("user_cookie exists")
+            user = User.by_id(user_id)
+            self.render("index.html",blogAllData=blogAllData,username=user.username)
+        else:
+            logging.info("user_cookie doesnt not exists")
+            self.render("index.html",blogAllData=blogAllData)
+
+
+class GetBlogbyId(Handler):
+    """docstring for ClassName"""
+    def get(self, blogId):
+        logging.info("Inside Get method of GetBlogbyId")
+        #blogData = db.GqlQuery("SELECT * FROM  BlogData where blogId="+blogId)
+        blogData = BlogData.get_by_id(int(blogId))
+        blogAllData = []
+        blogAllData.append(blogData)
+        logging.info(blogAllData)
+        self.render("index.html",blogAllData=blogAllData)
+
+
 
 class SignupForm(Handler):
     def get(self):
@@ -250,6 +266,69 @@ class Logout(Handler):
         self.logout()
         self.redirect('/blog')
 
+class MyBlog(Handler):
+    """docstring for ClassName"""
+    def get(self):
+        if self.isvalid_login():
+            logging.info("Inside Get method of MyBlog")
+            user_id = self.getCookieValue("user_id")
+            user = User.get_by_id(int(user_id))
+            blogAllData = db.GqlQuery("SELECT * FROM  BlogData WHERE user=:1",user)
+            self.render("index.html",blogAllData=blogAllData,username=user.username)
+        else:
+            self.redirect('/blog')
+
+class EditBlog(Handler):
+
+    def get(self):
+        if self.isvalid_login():
+            blogId = self.request.get('blogId')
+            blogData = BlogData.by_id(int(blogId))
+            user_id = self.getCookieValue("user_id")
+            user = User.get_by_id(int(user_id))
+            if blogData.user and blogData.user.username == user.username:
+                self.render("blogform.html",blogTitle=blogData.blogTitle,blogDescription=blogData.blogDescription,
+                    blogId=blogData.key().id())
+            else:
+                self.redirect('/blog/login')
+        else:
+            self.redirect('/blog/login')
+
+    def post(self):
+        blogId = self.request.get('blogId')
+        blogData = BlogData.by_id(int(blogId))
+        user_id = self.getCookieValue("user_id")
+        user = User.get_by_id(int(user_id))
+        editblogTitle = self.request.get("title");
+        editblogDescription = self.request.get("blogtext");
+        errorMap = {}
+        if not (editblogTitle and editblogTitle.strip()):
+            errorMap['blogTitle'] = "Please Provide the Blog Title"
+        if not (editblogDescription and editblogDescription.strip()):
+            errorMap['blogDescription'] = "Please Provide the Blog Decsription"
+        if (editblogTitle and editblogTitle.strip()) and (editblogDescription and editblogDescription.strip()):
+            editblogData = BlogData(blogTitle=editblogTitle,blogDescription=editblogDescription,user=user)
+            blogData.blogTitle = editblogTitle;
+            blogData.blogDescription = editblogDescription;
+            blogData.put()
+            blogId = str(blogData.key().id());
+            self.redirect('/blog/'+blogId)
+        else:
+            logging.info("Error While Submitting the Form %s",errorMap,)
+            self.render('blogform.html',error=errorMap,blogTitle=editblogTitle,blogDescription=editblogDescription)
+
+class DeleteBlog(Handler):
+    def post(self):
+        blogId = self.request.get('blogId')
+        blogData = BlogData.by_id(int(blogId))
+        user_id = self.getCookieValue("user_id")
+        user = User.get_by_id(int(user_id))
+        if blogData.user and blogData.user.username == user.username:
+            blogData.delete()
+            self.redirect('/blog')
+
+
+
 app = webapp2.WSGIApplication([
     ('/blog', GetAllBlog)
     ,('/blog/newpost', BlogFormHandler)
@@ -257,4 +336,7 @@ app = webapp2.WSGIApplication([
     ,('/blog/signup', SignupForm)
     ,('/blog/login', Login)
     ,('/blog/logout', Logout)
+    ,('/blog/myblogs', MyBlog)
+    ,('/blog/editblog', EditBlog)
+    ,('/blog/deleteblog', DeleteBlog)
     ], debug=True)

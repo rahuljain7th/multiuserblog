@@ -50,7 +50,24 @@
                         <div class="blogDescription">
                             {{blogData.blogDescription}}
                         </div>
+                          <div class="">
+                            Posted by{{blogData.user.username}}
+                        </div>
                     </article>
+                    {% if blogData.user.username == username %}
+                    <form method="GET" action="/blog/editblog">
+                    <input type="hidden" name="blogId" value="{{blogData.key().id()}}">
+                    <button class="inputarea button" type="submit" value="Edit your Post">Edit your Post</button>
+                    </form>
+                    {% endif %}
+                     {% if blogData.user.username == username %}
+                    <form method="POST" action="/blog/deleteblog">
+                    <input type="hidden" name="blogId" value="{{blogData.key().id()}}">
+                    <button class="inputarea button" type="submit" value="Delete your Post">Delete your Post</button>
+                    </form>
+                    {% endif %}
+                     </form>
+
                 {% endfor %}
             <div>
             </body>
