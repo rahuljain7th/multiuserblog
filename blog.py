@@ -6,6 +6,7 @@ import re
 import random
 import hmac
 import hashlib
+import json
 from string import letters
 from google.appengine.ext import db
 
@@ -119,6 +120,11 @@ class BlogData(db.Model):
     def by_id(cls,id):
         blogData = BlogData.get_by_id(int(id))
         return blogData;
+
+class Comment(db.Model):
+     commenttext = db.StringProperty(required=True)
+     user = db.ReferenceProperty(User)
+     blog = db.ReferenceProperty(BlogData)
 
 class BlogFormHandler(Handler):
 
@@ -327,6 +333,29 @@ class DeleteBlog(Handler):
             blogData.delete()
             self.redirect('/blog')
 
+class CommentHandler(Handler):
+    """docstring for ClassName"""
+    def post(self):
+        logging.debug("Inside Comment handler Post method")
+        logging.info(self.request.body)
+        data = json.loads(self.request.body)
+        comment = data['comment']
+        blogId = data['blogId']
+        #check if user is loggedIn.
+        if self.isvalid_login():
+            #TODO: Refactor to getUser Method Later to get user object
+            user_id = self.getCookieValue("user_id")
+            user = User.get_by_id(int(user_id))
+            #TODO: Refactor to getBlogbyId method to getBlogData Object
+            blogId = data['blogId']
+            blogData = BlogData.by_id(int(blogId))
+            comment = Comment(commenttext=comment,user=user,blog=blogData)
+            comment.put()
+            self.response.out.write(json.dumps(({'commenttext': comment.commenttext})))
+        else:
+            logging.debug("Redirect to login")
+            self.response.out.write(json.dumps(({'redirect': 'true'})))
+
 
 
 app = webapp2.WSGIApplication([
@@ -339,4 +368,5 @@ app = webapp2.WSGIApplication([
     ,('/blog/myblogs', MyBlog)
     ,('/blog/editblog', EditBlog)
     ,('/blog/deleteblog', DeleteBlog)
+    ,('/blog/comment', CommentHandler)
     ], debug=True)
