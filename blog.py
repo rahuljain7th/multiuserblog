@@ -115,16 +115,41 @@ class BlogData(db.Model):
     blogDescription = db.TextProperty(required=True)
     created = db.DateProperty(auto_now_add = True)
     user = db.ReferenceProperty(User)
+    totallikes = db.IntegerProperty(default = 0,required=False)
 
     @classmethod
     def by_id(cls,id):
         blogData = BlogData.get_by_id(int(id))
-        return blogData;
+        return blogData
+
+    @classmethod
+    def getCommentsofBlog(cls,blogData):
+        commentList = db.GqlQuery("SELECT * FROM  Comment WHERE blog=:1",blogData)
+        return commentList;
+
+    @classmethod
+    def incrementLike(cls,id):
+        logging.debug("Increasing the Like")
+        blogData = BlogData.get_by_id(int(id))
+        blogData.totallikes += 1
+        blogData.put()
+        return blogData.totallikes
+
+    @classmethod
+    def isPostAlreadyLikedByUser(cls,blogid,userid):
+        islikedpost = db.GqlQuery("SELECT * FROM  LikeBlog WHERE blogid=:1 AND userid:2",blogid,userid)
+        return islikedpost;
+
 
 class Comment(db.Model):
      commenttext = db.StringProperty(required=True)
      user = db.ReferenceProperty(User)
      blog = db.ReferenceProperty(BlogData)
+
+class LikeBlog(db.Model):
+    userid = db.StringProperty(required=True)
+    blogid = db.StringProperty(required=True)
+    isLikedBlog = db.BooleanProperty(default = False)
 
 class BlogFormHandler(Handler):
 
@@ -337,7 +362,6 @@ class CommentHandler(Handler):
     """docstring for ClassName"""
     def post(self):
         logging.debug("Inside Comment handler Post method")
-        logging.info(self.request.body)
         data = json.loads(self.request.body)
         comment = data['comment']
         blogId = data['blogId']
@@ -356,6 +380,27 @@ class CommentHandler(Handler):
             logging.debug("Redirect to login")
             self.response.out.write(json.dumps(({'redirect': 'true'})))
 
+class LikePostHandler(Handler):
+    def post(self):
+        logging.debug("Liking the Post")
+        data = json.loads(self.request.body)
+        blogId = data['blogId']
+        #check if user is loggedIn.
+        if self.isvalid_login():
+            user_id = self.getCookieValue("user_id")
+            user = User.get_by_id(int(user_id))
+            blogData = BlogData.by_id(int(blogId))
+            if blogData.user and blogData.user.username != user.username:
+                likeBlog = LikeBlog(userid=user_id,blogid=blogId,isLikedBlog=True);
+                likeBlog.put()
+                totallikes = blogData.incrementLike(blogId)
+
+                self.response.out.write(json.dumps(({'totalLikes': totallikes})))
+            else:
+                self.response.out.write(json.dumps(({'errorMsg': 'You Cannot Like your own post'})))
+        else:
+            logging.debug("Redirect to login")
+            self.response.out.write(json.dumps(({'errorMsg': 'Login to Like Post'})))
 
 
 app = webapp2.WSGIApplication([
@@ -369,4 +414,5 @@ app = webapp2.WSGIApplication([
     ,('/blog/editblog', EditBlog)
     ,('/blog/deleteblog', DeleteBlog)
     ,('/blog/comment', CommentHandler)
+    ,('/blog/likepost', LikePostHandler)
     ], debug=True)

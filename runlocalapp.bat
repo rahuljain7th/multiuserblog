@@ -1,2 +1,2 @@
-dev_appserver.py "E:\Development\UDACITY\Python Programming\Project-MultiUserBlog\L6-MultiUserBlog\app.yaml" --log_level=debug
+dev_appserver.py "E:\Development\UDACITY\Python Programming\Project-MultiUserBlog\L6-MultiUserBlog\app.yaml" --log_level=debug --datastore_path="/localdata"
 pause

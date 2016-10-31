@@ -4,6 +4,7 @@
         <title>Blogger</title>
         <link rel="stylesheet" type="text/css" href="../css/style.css">
          <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+         <script type="text/javascript" src="../js/blog.js"></script>
     </head>
     <body>
         <header class="text-center">
@@ -67,38 +68,24 @@
                     <button class="inputarea button" type="submit" value="Delete your Post">Delete your Post</button>
                     </form>
                     {% endif %}
-
+                    <div id="likecount-{{blogData.key().id()}}">{{blogData.totallikes}}</div> Likes
+                    <div id="errorMsg-{{blogData.key().id()}}"></div>
+<a href="#" id="{{blogData.key().id()}}" onclick="increaseLike(this.id);">Like</a>
                       <form action="" onsubmit="postcomment(this); return false;">
                       <!--The Below CommentList retrive the list of comments on pageLoad -->
-                    <div class="commentList">{{comment}}</div>
+                    <div class="commentList">
+                    {% for comment in blogData.getCommentsofBlog(blogData) %}
+                    {{comment.commenttext}}
+                    {% endfor %}
+                    </div>
                     <div class="postedcomment"></div>
                     <input type="hidden" name="blogId" value="{{blogData.key().id()}}">
                      <textarea class="commentInput" rows="3" cols="50" name="commentText"></textarea>
                      <button class="inputarea button" type="submit" value="Comment">Comment</button>
                     </form>
 
+
                 {% endfor %}
             <div>
-            <script type="text/javascript">
-            function postcomment(forminput) {
-                console.log();
-                $.ajax({
-                  type: "POST",
-                  url: "/blog/comment",
-                  dataType: 'json',
-                  data: JSON.stringify({ "blogId": forminput.blogId.value,"comment":forminput.commentText.value})
-                }).done(function(data) {
-                    if(data.redirect) {
-                        $(forminput).children('.commentList').append('<div class="errorMsg">please login to post</div>');
-                    } else {
-                         alert("append comment")
-                    $(forminput).children('.commentList').append('<div class="postedcomment">'+data['commenttext']+'</div>');
-                }
-
-                });
-            }
-
-
-            </script>
             </body>
         </html>
