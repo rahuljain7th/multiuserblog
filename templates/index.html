@@ -1,91 +1,138 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Blogger</title>
-        <link rel="stylesheet" type="text/css" href="../css/style.css">
-         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<html lang="en">
+<head>
+    <title>QuickWrite</title>
+    <link href="css/vendor/bootstrap.min.css" rel="stylesheet">
+     <link href="css/main.css" rel="stylesheet" type="text/css">
+    <link href="http://weloveiconfonts.com/api/?family=zocial" rel=
+    "stylesheet">
+    <!-- we need to set up the viewPort to tells the broswer the page can be rendered in any device.Otherwise the page will not correctly rendered in small screen size-->
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <!--Font for All Body -->
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css?family=Coiny" rel="stylesheet">
+   <!--Font for Blog Titles-->
+   <link href="https://fonts.googleapis.com/css?family=Fjalla+One" rel="stylesheet">
+<!-- -->
+   <link href="https://fonts.googleapis.com/css?family=Niconne" rel="stylesheet">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
          <script type="text/javascript" src="../js/blog.js"></script>
-    </head>
-    <body>
-        <header class="text-center">
-        <div class="logo">
-            <h1>Blogger</h1>
-            <p>(skills used : python,jinja2,googleDataStore,googleAppEngine)</p>
-            </div>
 
-            <div class="userform">
-            {% if not username %}
-            <form method="GET" action="/blog/signup">
-            <input class="inputarea button" type="submit" value="Sign Up">
-            </form>
+</head>
+<body>
+<header>
+<div class="container">
+<div class="row">
+<div class="col-md-6">
+ <h4 class="logo">QuickWrite</h4>
+ <p>A Portfolio Blogging System Developed by Rahul Jain</p>
+</div>
+<div class="col-md-6">
+<ul class="headernav nav nav-pills float-xs-right">
 
-
-            <form method="GET" action="/blog/login">
-            <input class="inputarea button" type="submit" value="Login">
-            </form>
+ {% if not username %}
+ <li class="nav-item">
+            <a class="nav-link active" href="/blog">Home <span class="sr-only">(current)</span></a>
+            </li>
+         <li class="nav-item">
+              <a class="nav-link active" href="/signup">Sign Up <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="/login">Login<span class="sr-only">(current)</span></a>
+            </li>
             {% else %}
-             <h2>Welcome {{username}}</h2>
-            <form method="GET" action="/blog/myblogs">
-            <input class="inputarea button" type="submit" value="My Blogs">
-            </form>
-            <form method="GET" action="/blog/logout">
-            <input class="inputarea button" type="submit" value="Logout">
-            </form>
+            <li class="nav-item">
+             <h5 class="nav-link" id="welcomeuser">Welcome {{username}}</h5>
+             </li>
+             <li class="nav-item">
+            <a class="nav-link active" href="/blog">Home <span class="sr-only">(current)</span></a>
+            </li>
+             <li class="nav-item">
+             <a class="nav-link active" href="/myblogs">My Blogs <span class="sr-only">(current)</span></a>
+             </li>
+             <li class="nav-item">
+            <a class="nav-link active" href="/logout">Logout <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link active" href="/newpost">Post New Blog <span class="sr-only">(current)</span></a>
+            </li>
             {% endif %}
-            {% if username %}
-                <form action="/blog/newpost">
-                <input class="inputarea button" type="submit" value="Post New Blog">
-                </form>
-                {% endif %}
-            </div>
-            <div style="clear: both;"></div>
+    </ul>
+</div>
+</div>
+</div>
+</div>
+</header>
+<div style="clear: both;"></div>
+<body>
+   <div class="container">
+ {% for blogData in blogAllData %}
+ <div class="row blogheader">
+<h1 class="blogTitle">{{blogData.blogTitle}}</h1>
+<div class="blogInfo">
+<h3> <span class="postedBy">Posted by</span> {{blogData.user.username}}</h3>
+ <h3> <span class="postedBy">Created on </span> {{blogData.created}}</h3>
+ </div>
+ </div>
 
-        </header>
-        <div class="container">
-                {% for blogData in blogAllData %}
-                    <article class="text-center">
-                        <div class="blogheader">
-                            <h3 class="blogTitle">{{blogData.blogTitle}}</h3>
-                            <p class="blogDate">{{blogData.created}}</p>
-                            <div style="clear: both;"></div>
-                        </div>
-                        <div class="blogDescription">
-                            {{blogData.blogDescription}}
-                        </div>
-                          <div class="">
-                            Posted by{{blogData.user.username}}
-                        </div>
-                    </article>
-                    {% if blogData.user.username == username %}
-                    <form method="GET" action="/blog/editblog">
-                    <input type="hidden" name="blogId" value="{{blogData.key().id()}}">
-                    <button class="inputarea button" type="submit" value="Edit your Post">Edit your Post</button>
-                    </form>
-                    {% endif %}
-                     {% if blogData.user.username == username %}
-                    <form method="POST" action="/blog/deleteblog">
-                    <input type="hidden" name="blogId" value="{{blogData.key().id()}}">
-                    <button class="inputarea button" type="submit" value="Delete your Post">Delete your Post</button>
-                    </form>
-                    {% endif %}
-                    <div id="likecount-{{blogData.key().id()}}">{{blogData.totallikes}}</div> Likes
+ <div class="blogDescription">
+    {{blogData.blogDescription}}
+</div>
+<div class="flex">
+  <div id="likecount-{{blogData.key().id()}}">{{blogData.totallikes}} </div>
+  <a href="javascript:void(0);" id="{{blogData.key().id()}}" onclick="increaseLike(this.id);" class="like">Like</a>
+  <div id="errorMsg-{{blogData.key().id()}}"></div>
+  </div>
                     <div id="errorMsg-{{blogData.key().id()}}"></div>
-<a href="#" id="{{blogData.key().id()}}" onclick="increaseLike(this.id);">Like</a>
-                      <form action="" onsubmit="postcomment(this); return false;">
-                      <!--The Below CommentList retrive the list of comments on pageLoad -->
-                    <div class="commentList">
+  {% if blogData.user.username == username %}
+  <div class="flex">
+                    <form method="GET" action="/editblog">
+                    <input type="hidden" name="blogId" value="{{blogData.key().id()}}">
+                    <button type="submit" class="btn btn-default" value="Edit your Post">Edit</button>
+                    </form>
+                    <form method="POST" action="/deleteblog">
+                    <input type="hidden" name="blogId" value="{{blogData.key().id()}}">
+                    <button type="submit" class="btn btn-default" value="Delete your Post">Delete</button>
+                    </form>
+                    </div>
+                    {% endif %}
+                    <div class="formcomment">
+                    <div class="well">
+                    <h4>Leave a Comment:</h4>
+  <form action="javascript:void(0);"  role="form" onsubmit="postcomment(this)">
+                    <input type="hidden" name="blogId" value="{{blogData.key().id()}}">
+                    <div class="form-group">
+                     <textarea class="form-control commentInput" rows="3" name="commentText"></textarea>
+                     </div>
+                     <div class="flex">
+                     <button class="btn btn-primary" type="submit" value="Comment">Comment</button>
+                     <div class="error"></div>
+                     </div>
+                    </form>
+
+                </div>
+                       <h4>Comments</h4>
+                       <div class="commentList">
                     {% for comment in blogData.getCommentsofBlog(blogData) %}
-                    {{comment.commenttext}}
+                    <ul>
+                    <li><p>{{comment.commenttext}}</p></li>
+                    </ul>
                     {% endfor %}
                     </div>
-                    <div class="postedcomment"></div>
-                    <input type="hidden" name="blogId" value="{{blogData.key().id()}}">
-                     <textarea class="commentInput" rows="3" cols="50" name="commentText"></textarea>
-                     <button class="inputarea button" type="submit" value="Comment">Comment</button>
-                    </form>
+</div>
+<hr>
 
+{% endfor %}
+</div>
+</body>
+  <footer>
+  <ul class="headernav nav nav-pills pull-left">
+  <li class="nav-item">
+        <a class="nav-link active" href="https://www.linkedin.com/in/rahuljain7th">Contact Me<span class="sr-only">(current)</span></a>
+        </li>
+        </ul>
+    </footer>
 
-                {% endfor %}
-            <div>
-            </body>
-        </html>
+</body>
+</html>

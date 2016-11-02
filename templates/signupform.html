@@ -1,47 +1,98 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title></title>
-        <link rel="stylesheet" type="text/css" href="../css/style.css">
-    </head>
+   <head>
+    <title>QuickWrite-Signup</title>
+    <link href="css/vendor/bootstrap.min.css" rel="stylesheet">
+     <link href="css/main.css" rel="stylesheet" type="text/css">
+    <link href="http://weloveiconfonts.com/api/?family=zocial" rel=
+    "stylesheet">
+    <!-- we need to set up the viewPort to tells the broswer the page can be rendered in any device.Otherwise the page will not correctly rendered in small screen size-->
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <!--Font for All Body -->
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css?family=Coiny" rel="stylesheet">
+   <!--Font for Blog Titles-->
+   <link href="https://fonts.googleapis.com/css?family=Fjalla+One" rel="stylesheet">
+<!-- -->
+   <link href="https://fonts.googleapis.com/css?family=Niconne" rel="stylesheet">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+         <script type="text/javascript" src="js/blog.js"></script>
+
+</head>
     <body>
         <header>
-            <h1>User Sign Up Form</h1>
+           <div class="container">
+<div class="row">
+<div class="col-md-6">
+ <h4 class="logo">QuickWrite</h4>
+ <p>A Portfolio Blogging System Developed by Rahul Jain</p>
+</div>
+<div class="col-md-6">
+<ul class="headernav nav nav-pills float-xs-right">
+<li class="nav-item">
+            <a class="nav-link active" href="/blog">Home <span class="sr-only">(current)</span></a>
+            </li>
+    </ul>
+</div>
+</div>
+</div>
+</div>
         </header>
         <div class="container">
+            <div class="well col-sm-offset-4 col-sm-4">
             <form method="post" id="signupform" action="signup">
-                <label class="row">UserName:
-                    <div class="flex">
-                        <input type="text" class="userinputarea" name="username" value="{{output['username']}}">
-                        <span class="errorMsg">{{errormap['username']}}</span>
-                    </div>
-                </label>
-                <label class="row">Password:
-                    <div class="flex">
-                        <input type="password" class="userinputarea" name="password">
-                         <span class="errorMsg">{{errormap['password']}}</span>
-                    </div>
-                </label>
-                <label class="row">Confirm password:
-                <div class="flex">
-                    <input type="password" class="userinputarea" name="confirmpass">
-                     <span class="errorMsg">{{errormap['confirmpassword']}}</span>
-                    </div>
-                </label>
-                <label class="row">email(optional):
-                <div class="flex">
-                    <input type="email" class="userinputarea" name="email" value="{{output['email']}}">
-                    <span class="errorMsg">{{errormap['email']}}</span>
-                     </div>
-                </label>
-                 <label class="row">
-                <input class="button" id="loginsubmit" type="submit" name="submit">
-                </label>
-            </form>
-               <form method="GET"  action="/blog/login">
-            <input class="inputarea button" id="signupinput" type="submit" value="Login Here">
+            <div class="form-group"><label for="username">UserName:</label> <span class="alert">{{errormap['username']}}</span>
+             <div>
+
+                        <input type="text" class="form-control" name="username" id="username" value="{{output['username']}}">
+            </div>
+            </div>
+               <div class="form-group"><label for="password">Password:</label> <span class="alert">{{errormap['password']}}</span>
+             <div>
+                        <input type="password" class="form-control" name="password" id="password">
+
+            </div>
+            </div>
+               <div class="form-group"><label for="confirmpass" >Confirm Password:</label>
+                 <span class="alert">{{errormap['confirmpassword']}}</span>
+             <div >
+                        <input type="password" class="form-control" name="confirmpass" id="confirmpass">
+
+            </div>
+            </div>
+               <div class="form-group"><label for="email">Email:(optional)</label>
+                <span class="alert">{{errormap['email']}}</span>
+             <div >
+                        <input type="email" class="form-control" name="email" id="email" value="{{output['email']}}">
+            </div>
+            </div>
+    <div class="form-group">
+    <div class="col-sm-offset-4 col-sm-4">
+      <button type="submit" class="btn btn-default">Sign Up</button>
+    </div>
+  </div>
 
             </form>
+<div style="clear: both;"></div>
+
+</div>
+
+        <form method="GET"  action="/login">
+        <div class="form-group">
+<div>
+<label class="col-sm-offset-4">Already Registred User? </label>
+            <button class="btn btn-default" id="signupinput" type="submit" value="Login Here">Login Here</button>
+</div>
+            </div>
+        </form>
         </div>
+  <footer>
+  <ul class="headernav nav nav-pills pull-left">
+  <li class="nav-item">
+        <a class="nav-link active" href="https://www.linkedin.com/in/rahuljain7th">Contact Me<span class="sr-only">(current)</span></a>
+        </li>
+        </ul>
+    </footer>
     </body>
 </html>

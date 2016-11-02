@@ -1,38 +1,80 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title></title>
-        <link rel="stylesheet" type="text/css" href="../css/style.css">
+           <title>QuickWrite-BlogForm</title>
+            <link href="css/vendor/bootstrap.min.css" rel="stylesheet">
+     <link href="css/main.css" rel="stylesheet" type="text/css">
+    <link href="http://weloveiconfonts.com/api/?family=zocial" rel=
+    "stylesheet">
+    <!-- we need to set up the viewPort to tells the broswer the page can be rendered in any device.Otherwise the page will not correctly rendered in small screen size-->
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <!--Font for All Body -->
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css?family=Coiny" rel="stylesheet">
+   <!--Font for Blog Titles-->
+   <link href="https://fonts.googleapis.com/css?family=Fjalla+One" rel="stylesheet">
+<!-- -->
+   <link href="https://fonts.googleapis.com/css?family=Niconne" rel="stylesheet">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+         <script type="text/javascript" src="../js/blog.js"></script>
     </head>
     <body>
+        <header>
+           <div class="container">
+<div class="row">
+<div class="col-md-6">
+ <h4 class="logo">QuickWrite</h4>
+ <p>A Portfolio Blogging System Developed by Rahul Jain</p>
+</div>
+<div class="col-md-6">
+<ul class="headernav nav nav-pills float-xs-right">
+<li class="nav-item">
+            <a class="nav-link active" href="/blog">Home <span class="sr-only">(current)</span></a>
+            </li>
+    </ul>
+</div>
+</div>
+</div>
+</div>
+        </header>
         <div class="container">
-            <div class="row title">
-                <h3>Add New Blog</h3>
-            </div>
-            <form method="Post">
-                <label class="row"> <p>Blog Title :</p>
-                    <div class="flex">
-                        <input class="blogInput" type="text" name="title" value="{{blogTitle}}">
-                        {% if error %}
+        <div class="well col-sm-offset-2 col-sm-10">
+             <form method="post" action="/newpost">
+
+               <div class="form-group"><label for="title">Blog Title :</label>
+             <div>
+                        <input type="text" class="form-control" name="title"  value="{{blogTitle}}">
+                           {% if error %}
                             <span class="errorMsg">{{error.blogTitle}}</span>
                         {% endif %}
-                    </div>
-                </label>
-                <label class="row"><p>Blog Description :</p>
-                    <div class="flex">
-                        <textarea class="blogDescInput" rows="20" cols="300" name="blogtext">{{blogDescription}}</textarea>
-                        {% if error %}
+            </div>
+            </div>
+             <div class="form-group"><label for="blogtext">Blog Description :</label>
+               <textarea  class="form-control" rows="20" cols="100" name="blogtext">{{blogDescription}}</textarea>
+                          {% if error %}
                             <span class="errorMsg">{{error.blogDescription}}</span>
                         {% endif %}
-                    </div>
-                </label>
-                <label class="row">
-                <input type="hidden" name="blogId" value="{{blogId}}">
-                    <input class="button" type="submit" name="submit">
-                </label>
+
+            </div>
+             <div class="form-group">
+    <div class="col-sm-offset-4 col-sm-4">
+    <input type="hidden" name="blogId" value="{{blogId}}">
+      <button type="submit" class="btn btn-default">Submit</button>
+    </div>
+  </div>
             </form>
+        </div>
+
             <a href="javascript:history.back()">Go Back</a>
 
 
         </div>
+          <footer>
+  <ul class="headernav nav nav-pills pull-left">
+  <li class="nav-item">
+        <a class="nav-link active" href="https://www.linkedin.com/in/rahuljain7th">Contact Me<span class="sr-only">(current)</span></a>
+        </li>
+        </ul>
+    </footer>
     </body>

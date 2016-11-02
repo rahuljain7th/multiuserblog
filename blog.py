@@ -124,7 +124,7 @@ class BlogData(db.Model):
 
     @classmethod
     def getCommentsofBlog(cls,blogData):
-        commentList = db.GqlQuery("SELECT * FROM  Comment WHERE blog=:1",blogData)
+        commentList = db.GqlQuery("SELECT * FROM  Comment WHERE blog=:1 ORDER BY date desc",blogData)
         return commentList;
 
     @classmethod
@@ -137,14 +137,19 @@ class BlogData(db.Model):
 
     @classmethod
     def isPostAlreadyLikedByUser(cls,blogid,userid):
-        islikedpost = db.GqlQuery("SELECT * FROM  LikeBlog WHERE blogid=:1 AND userid:2",blogid,userid)
-        return islikedpost;
+       # q = db.GqlQuery("SELECT * FROM  LikeBlog WHERE blogid=:1",blogid)
+        q = LikeBlog.all().filter("userid =",userid).filter("blogid =",blogid).get()
+        logging.debug(q);
+        if q and q.isLikedBlog:
+            return True
+        return False
 
 
 class Comment(db.Model):
      commenttext = db.StringProperty(required=True)
      user = db.ReferenceProperty(User)
      blog = db.ReferenceProperty(BlogData)
+     date = db.DateTimeProperty(auto_now_add=True)
 
 class LikeBlog(db.Model):
     userid = db.StringProperty(required=True)
@@ -158,7 +163,7 @@ class BlogFormHandler(Handler):
         if self.isvalid_login():
             self.render("blogform.html",blogData={})
         else:
-            self.redirect('/blog/login')
+            self.redirect('/login')
 
     def post(self):
         user_id = self.getCookieValue("user_id")
@@ -175,7 +180,7 @@ class BlogFormHandler(Handler):
             blogData = BlogData(blogTitle=blogTitle,blogDescription=blogDescription,user=user)
             blogData.put()
             blogId = str(blogData.key().id());
-            self.redirect('/blog/'+blogId)
+            self.redirect('/'+blogId)
         else:
             logging.info("Error While Submitting the Form %s",errorMap)
             self.render('blogform.html',error=errorMap,blogTitle=blogTitle,blogDescription=blogDescription)
@@ -208,7 +213,17 @@ class GetBlogbyId(Handler):
         blogAllData = []
         blogAllData.append(blogData)
         logging.info(blogAllData)
-        self.render("index.html",blogAllData=blogAllData)
+        user_cookie = self.read_secure_cookie('user_id')
+        logging.debug("user_cookie %s",user_cookie)
+        user_id = self.check_secure_val(user_cookie)
+        logging.debug("user_id %s",user_id)
+        if user_id:
+            logging.info("user_cookie exists")
+            user = User.by_id(user_id)
+            self.render("index.html",blogAllData=blogAllData,username=user.username)
+        else:
+            logging.info("user_cookie doesnt not exists")
+            self.render("index.html",blogAllData=blogAllData)
 
 
 
@@ -321,9 +336,9 @@ class EditBlog(Handler):
                 self.render("blogform.html",blogTitle=blogData.blogTitle,blogDescription=blogData.blogDescription,
                     blogId=blogData.key().id())
             else:
-                self.redirect('/blog/login')
+                self.redirect('/login')
         else:
-            self.redirect('/blog/login')
+            self.redirect('/login')
 
     def post(self):
         blogId = self.request.get('blogId')
@@ -343,7 +358,7 @@ class EditBlog(Handler):
             blogData.blogDescription = editblogDescription;
             blogData.put()
             blogId = str(blogData.key().id());
-            self.redirect('/blog/'+blogId)
+            self.redirect('/'+blogId)
         else:
             logging.info("Error While Submitting the Form %s",errorMap,)
             self.render('blogform.html',error=errorMap,blogTitle=editblogTitle,blogDescription=editblogDescription)
@@ -356,7 +371,7 @@ class DeleteBlog(Handler):
         user = User.get_by_id(int(user_id))
         if blogData.user and blogData.user.username == user.username:
             blogData.delete()
-            self.redirect('/blog')
+        self.redirect('/myblogs')
 
 class CommentHandler(Handler):
     """docstring for ClassName"""
@@ -391,11 +406,15 @@ class LikePostHandler(Handler):
             user = User.get_by_id(int(user_id))
             blogData = BlogData.by_id(int(blogId))
             if blogData.user and blogData.user.username != user.username:
-                likeBlog = LikeBlog(userid=user_id,blogid=blogId,isLikedBlog=True);
-                likeBlog.put()
-                totallikes = blogData.incrementLike(blogId)
+                if blogData.isPostAlreadyLikedByUser(blogId,user_id):
+                    self.response.out.write(json.dumps(({'errorMsg': 'You Have Already Liked the Post'})))
+                else:
+                    likeBlog = LikeBlog(userid=user_id,blogid=blogId,isLikedBlog=True);
+                    likeBlog.put()
+                    totallikes = blogData.incrementLike(blogId)
+                    self.response.out.write(json.dumps(({'totalLikes': totallikes})))
 
-                self.response.out.write(json.dumps(({'totalLikes': totallikes})))
+
             else:
                 self.response.out.write(json.dumps(({'errorMsg': 'You Cannot Like your own post'})))
         else:
@@ -405,14 +424,15 @@ class LikePostHandler(Handler):
 
 app = webapp2.WSGIApplication([
     ('/blog', GetAllBlog)
-    ,('/blog/newpost', BlogFormHandler)
-    ,(r'/blog/(\d+)',GetBlogbyId)
-    ,('/blog/signup', SignupForm)
-    ,('/blog/login', Login)
-    ,('/blog/logout', Logout)
-    ,('/blog/myblogs', MyBlog)
-    ,('/blog/editblog', EditBlog)
-    ,('/blog/deleteblog', DeleteBlog)
-    ,('/blog/comment', CommentHandler)
-    ,('/blog/likepost', LikePostHandler)
+    ,('/newpost', BlogFormHandler)
+    ,(r'/(\d+)',GetBlogbyId)
+    ,('/signup', SignupForm)
+    ,('/login', Login)
+    ,('/logout', Logout)
+    ,('/myblogs', MyBlog)
+    ,('/editblog', EditBlog)
+    ,('/deleteblog', DeleteBlog)
+    ,('/comment', CommentHandler)
+    ,('/likepost', LikePostHandler),
+    ('/', GetAllBlog)
     ], debug=True)

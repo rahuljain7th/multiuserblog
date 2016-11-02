@@ -1,2 +1,2 @@
-gcloud app deploy --project multiusserblog-rahuljain7th
+gcloud app deploy --project quickwrite-rahuljain7th
 pause

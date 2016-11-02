@@ -1,37 +1,87 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title></title>
-        <link rel="stylesheet" type="text/css" href="../css/style.css">
+        <title>QuickWrite-Login</title>
+            <link href="css/vendor/bootstrap.min.css" rel="stylesheet">
+     <link href="css/main.css" rel="stylesheet" type="text/css">
+    <link href="http://weloveiconfonts.com/api/?family=zocial" rel=
+    "stylesheet">
+    <!-- we need to set up the viewPort to tells the broswer the page can be rendered in any device.Otherwise the page will not correctly rendered in small screen size-->
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <!--Font for All Body -->
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css?family=Coiny" rel="stylesheet">
+   <!--Font for Blog Titles-->
+   <link href="https://fonts.googleapis.com/css?family=Fjalla+One" rel="stylesheet">
+<!-- -->
+   <link href="https://fonts.googleapis.com/css?family=Niconne" rel="stylesheet">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+         <script type="text/javascript" src="../js/blog.js"></script>
+
     </head>
     <body>
-        <header>
-            <h1>User Login Form</h1>
+           <header>
+           <div class="container">
+<div class="row">
+<div class="col-md-6">
+ <h4 class="logo">QuickWrite</h4>
+ <p>A Portfolio Blogging System Developed by Rahul Jain</p>
+</div>
+<div class="col-md-6">
+<ul class="headernav nav nav-pills float-xs-right">
+<li class="nav-item">
+            <a class="nav-link active" href="/blog">Home <span class="sr-only">(current)</span></a>
+            </li>
+    </ul>
+</div>
+</div>
+</div>
+</div>
         </header>
         <div class="container">
+             <div class="well col-sm-offset-4 col-sm-4">
             <form method="post" id="loginform" action="login">
-                <label class="row"><p>UserName:</p>
-                    <div class="flex">
-                        <input type="text" class="userinputarea" name="username" value="{{username}}">
-                    </div>
-                </label>
-                <label class="row"><p> Password: </p>
-                    <div class="flex">
-                        <input type="password" class="userinputarea" name="password">
-                        <div class="errorMsg" id="loginerror">{{invalidloginmsg}}</div>
-                    </div>
+            <div class="form-group"><label for="username">UserName:</label>
+             <div>
+                        <input type="text" class="form-control" name="username" id="username" value="{{username}}">
+            </div>
+            </div>
+               <div class="form-group"><label for="password">Password:</label>
+             <div>
+                     <input type="password" class="form-control" name="password">
 
-                </label>
+            </div>
+            </div>
+            <span class="alert">{{invalidloginmsg}}</span>
 
-                 <label class="row">
-                <input class="button" id="loginsubmit" type="submit" name="submit" value="Login">
-                </label>
+
+    <div class="form-group">
+    <div class="col-sm-offset-4 col-sm-4">
+      <button type="submit" class="btn btn-default">Login</button>
+    </div>
+  </div>
+
             </form>
-            <form method="GET"  action="/blog/signup">
-            <input class="inputarea button" id="signupinput" type="submit" value="Sign Up Here">
+<div style="clear: both;"></div>
 
-            </form>
+</div>
+<form method="GET"  action="/signup">>
+        <div class="form-group">
+<div>
+<label class="col-sm-offset-4">Not Registred Yet? </label>
+            <button class="btn btn-default" id="signupinput" type="submit" value="SignUp Here">SignUp Here</button>
+</div>
+            </div>
+        </form>
 
         </div>
+          <footer>
+  <ul class="headernav nav nav-pills pull-left">
+  <li class="nav-item">
+        <a class="nav-link active" href="https://www.linkedin.com/in/rahuljain7th">Contact Me<span class="sr-only">(current)</span></a>
+        </li>
+        </ul>
+    </footer>
     </body>
 </html>
