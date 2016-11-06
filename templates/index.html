@@ -65,10 +65,8 @@
 </div>
 </div>
 </div>
-</div>
 </header>
 <div style="clear: both;"></div>
-<body>
    <div class="container">
  {% for blogData in blogAllData %}
  <div class="row blogheader">
@@ -87,7 +85,6 @@
   <a href="javascript:void(0);" id="{{blogData.key().id()}}" onclick="increaseLike(this.id);" class="like">Like</a>
   <div id="errorMsg-{{blogData.key().id()}}"></div>
   </div>
-                    <div id="errorMsg-{{blogData.key().id()}}"></div>
   {% if blogData.user.username == username %}
   <div class="flex">
                     <form method="GET" action="/editblog">
@@ -128,7 +125,6 @@
 
 {% endfor %}
 </div>
-</body>
   <footer>
   <ul class="headernav nav nav-pills pull-left">
   <li class="nav-item">
