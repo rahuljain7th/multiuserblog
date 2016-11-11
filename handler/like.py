@@ -1,7 +1,6 @@
 from bloghandler import BlogHandler
-from models import user
-from models import post
-from models import like
+from models import user,post,like
+import logging
 
 class LikePostHandler(BlogHandler):
     """To Handle the Like Functionality of the Blog"""

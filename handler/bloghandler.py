@@ -9,15 +9,10 @@ import hashlib
 import json
 from string import letters
 from google.appengine.ext import db
-from postBlog import BlogFormHandler
-from getBlog import GetAllBlog,GetBlogbyId,MyBlog
-from signup import SignupForm
-from login import Logout,Login
-from comment import CommentHandler
-from like import LikePostHandler
+
 
 # jinja2 file system has been used to get the template from dir
-template_dir = os.path.join(os.path.dirname(__file__), 'templates')
+template_dir = os.path.join(os.path.dirname(__file__),'..', 'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir))
 secret = "uda.raljulthnai7i$najx9jk5"
 
@@ -140,18 +135,4 @@ class BlogHandler(webapp2.RequestHandler):
         if user_id:
             return 'true'
 
-"""Defining the Url Route to Handler"""
-app = webapp2.WSGIApplication([
-    ('/blog', GetAllBlog),
-    ('/newpost', BlogFormHandler),
-    (r'/(\d+)', GetBlogbyId),
-    ('/signup', SignupForm),
-    ('/login', Login),
-    ('/logout', Logout),
-    ('/myblogs', MyBlog),
-    ('/editblog', EditBlog),
-    ('/deleteblog', DeleteBlog),
-    ('/comment', CommentHandler),
-    ('/likepost', LikePostHandler),
-    ('/', GetAllBlog)
-    ], debug=True)
+

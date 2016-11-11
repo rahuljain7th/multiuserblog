@@ -1,6 +1,6 @@
 from bloghandler import BlogHandler
-from models import user
-from models import post
+from models import user,post
+import logging
 
 class SignupForm(BlogHandler):
     """This Class is used to Handle the SignUp Functionality for user"""

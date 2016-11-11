@@ -1,6 +1,6 @@
 from bloghandler import BlogHandler
-from models import user
-from models import post
+from models import user,post
+import logging
 
 class BlogFormHandler(BlogHandler):
     """This Handler is used to Get the Blog

@@ -1,5 +1,6 @@
 from google.appengine.ext import db
 from user import User
+from post import BlogData
 
 class Comment(db.Model):
     """Comment Table created by DB which store the comments of blog"""

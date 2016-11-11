@@ -1,7 +1,6 @@
 from bloghandler import BlogHandler
-from models import comment
-from models import user
-from models import post
+from models import comment,user,post
+import logging
 
 class CommentHandler(BlogHandler):
     """To Handle the Comment Functionality of the Blog"""
