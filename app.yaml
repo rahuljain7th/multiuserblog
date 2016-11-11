@@ -7,7 +7,7 @@ handlers:
 - url: /js
   static_dir: js
 - url: /.*
-  script: blog.app
+  script: handler.handler.app
 
 libraries:
 - name: jinja2
