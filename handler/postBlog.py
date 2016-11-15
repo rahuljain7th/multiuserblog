@@ -54,7 +54,7 @@ class EditBlog(BlogHandler):
             blogData = BlogData.by_id(int(blogId))
             user_id = self.getCookieValue("user_id")
             user = User.get_by_id(int(user_id))
-            if blogData.user and blogData.user.username == user.username:
+            if blogData and blogData.user and blogData.user.username == user.username:
                 self.render("blogform.html", blogTitle=blogData.blogTitle,
                             blogDescription=blogData.blogDescription,
                             blogId=blogData.key().id())
@@ -78,19 +78,18 @@ class EditBlog(BlogHandler):
             errorMap['blogDescription'] = "Please Provide the Blog Decsription"
         if (editblogTitle and editblogTitle.strip()) and (
              editblogDescription and editblogDescription.strip()):
-            editblogData = BlogData(blogTitle=editblogTitle,
-                                    blogDescription=editblogDescription,
-                                    user=user)
-            blogData.blogTitle = editblogTitle
-            blogData.blogDescription = editblogDescription
-            blogData.put()
-            blogId = str(blogData.key().id())
-            self.redirect('/'+blogId)
-        else:
-            logging.info("Error While Submitting the Form %s", errorMap,)
+            if blogData and blogData.user and blogData.user.username == user.username:
+                blogData.blogTitle = editblogTitle
+                blogData.blogDescription = editblogDescription
+                blogData.put()
+                self.redirect('/'+blogId)
+            else:
+                errorMap['blogDescription'] = "You cannot Edit this Blog"
+        if errorMap:
+            logging.info("Error While Submitting the Form %s", errorMap)
             self.render('blogform.html', error=errorMap,
                         blogTitle=editblogTitle,
-                        blogDescription=editblogDescription)
+                        blogDescription=editblogDescription,blogId=blogId)
 
 class DeleteBlog(BlogHandler):
     """To Handle the Delete Functionality of the Blog"""
@@ -99,6 +98,6 @@ class DeleteBlog(BlogHandler):
         blogData = BlogData.by_id(int(blogId))
         user_id = self.getCookieValue("user_id")
         user = User.get_by_id(int(user_id))
-        if blogData.user and blogData.user.username == user.username:
+        if blogData and blogData.user and blogData.user.username == user.username:
             blogData.delete()
         self.redirect('/myblogs')

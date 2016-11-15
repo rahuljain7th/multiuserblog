@@ -17,7 +17,7 @@ class LikePostHandler(BlogHandler):
             user_id = self.getCookieValue("user_id")
             user = User.get_by_id(int(user_id))
             blogData = BlogData.by_id(int(blogId))
-            if blogData.user and blogData.user.username != user.username:
+            if blogData and blogData.user and blogData.user.username != user.username:
                 if blogData.isPostAlreadyLikedByUser(blogId, user_id):
                     self.response.out.write(json.dumps(({'errorMsg':
                                             'You Have Already Liked the Post'

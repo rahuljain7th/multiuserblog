@@ -20,11 +20,15 @@ class CommentHandler(BlogHandler):
             # TODO: Refactor to getBlogbyId method to getBlogData Object
             blogId = data['blogId']
             blogData = BlogData.by_id(int(blogId))
-            comment = Comment(commenttext=comment,
+            if blogData:
+                comment = Comment(commenttext=comment,
                               user=user, blog=blogData)
-            comment.put()
-            self.response.out.write(json.dumps(({'commenttext':
+                comment.put()
+                self.response.out.write(json.dumps(({'commenttext':
                                                 comment.commenttext})))
+            else:
+                self.response.out.write(json.dumps(({'error':
+                                                "This Blog doesnt Exists"})))
         else:
             logging.debug("Redirect to login")
             self.response.out.write(json.dumps(({'redirect': 'true'})))

@@ -8,6 +8,8 @@
 
                     if(data.redirect) {
                         $(forminput).find('.error').append('<div class="errorMsg">please login to post</div>');
+                    } else if(data.error) {
+                        $(forminput).find('.error').append('<div class="errorMsg">This Blog Doesnt Exist</div>');
                     } else {
                         location.reload();
                     //$(forminput).closest('.formcomment').find('.commentList').prepend('<ul><li><p>'+data['commenttext']+'</p></li></ul>');
@@ -59,4 +61,12 @@
                         location.reload();
                     }
                 });
+           }
+
+              function postBlog(forminput) {
+              if(forminput.blogId.value) {
+                document.postblogform.action = "/editblog";
+              } else {
+                document.postblogform.action = "/newpost";
+              }
            }
