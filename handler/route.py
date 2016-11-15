@@ -3,7 +3,7 @@ from postBlog import BlogFormHandler,EditBlog,DeleteBlog
 from getBlog import GetAllBlog,GetBlogbyId,MyBlog
 from signup import SignupForm
 from login import Logout,Login
-from comment import CommentHandler
+from comment import CommentHandler,DeleteCommentHandler,EditCommentHandler
 from like import LikePostHandler
 import logging
 
@@ -20,5 +20,7 @@ app = webapp2.WSGIApplication([
     ('/deleteblog', DeleteBlog),
     ('/comment', CommentHandler),
     ('/likepost', LikePostHandler),
+    ('/deleteComment', DeleteCommentHandler),
+    ('/editComment', EditCommentHandler),
     ('/', GetAllBlog)
     ], debug=True)

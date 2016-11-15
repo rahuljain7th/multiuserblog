@@ -1,5 +1,7 @@
 from google.appengine.ext import db
 from user import User
+import logging
+from models.like import LikeBlog
 
 class BlogData(db.Model):
     """BlogData Model of database

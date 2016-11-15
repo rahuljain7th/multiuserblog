@@ -1,6 +1,8 @@
 from bloghandler import BlogHandler
 from models import user,post
 import logging
+import re
+from models.user import User
 
 class SignupForm(BlogHandler):
     """This Class is used to Handle the SignUp Functionality for user"""
@@ -40,7 +42,8 @@ class SignupForm(BlogHandler):
             # get the user by username to validate if username already exists
             u = User.by_name(username)
             if u:
-                errormap['userexists'] = 'The user already exists'
+                logging.debug("User Already Exists")
+                errormap['username'] = 'The user already exists'
                 self.render('signupform.html', errormap=errormap,
                             output={'username': username, 'email': email})
             else:

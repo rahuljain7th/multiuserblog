@@ -1,5 +1,6 @@
 from bloghandler import BlogHandler
 from models import user,post
+from models.user import User
 import logging
 
 class Login(BlogHandler):

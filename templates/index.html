@@ -18,6 +18,7 @@
    <link href="https://fonts.googleapis.com/css?family=Niconne" rel="stylesheet">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
          <script type="text/javascript" src="../js/blog.js"></script>
+         <script type="text/javascript" src="../js/vendor/bootstrap.min.js"></script>
 
 </head>
 <body>
@@ -116,7 +117,37 @@
                        <div class="commentList">
                     {% for comment in blogData.getCommentsofBlog(blogData) %}
                     <ul>
-                    <li><p>{{comment.commenttext}}</p></li>
+                    <li>
+                    <p>{{comment.commenttext}}</p>
+ <a href="#myModal{{comment.key().id()}}" id="{{comment.key().id()}}" data-toggle="modal" class="edit">edit</a>
+ <a href="javascript:void(0);" id="{{comment.key().id()}}" onclick="deleteComment(this.id);" class="edit">Delete</a>
+ <!-- Edit Post Modal -->
+<div class="modal fade" id="myModal{{comment.key().id()}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"
+              aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Edit Comment</h4>
+          </div>
+           <form action="javascript:void(0);"  role="form" onsubmit="editComment(this)">
+          <div class="modal-body">
+          <input type="hidden" name="commentModalId" value="{{comment.key().id()}}">
+            <textarea class="form-control commentText" rows="3" name="commentText">{{comment.commenttext}}</textarea>
+          <!--  <p class="text-warning">
+              <small>If you don't save, your changes will be lost.</small>
+            </p> -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary"  value="savechange">Save changes</button>
+          </div>
+          </form>
+        </div>
+      </div>
+</div>
+   <div id="errorMsg-{{comment.key().id()}}"></div>
+                    </li>
                     </ul>
                     {% endfor %}
                     </div>

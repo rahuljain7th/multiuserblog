@@ -1,4 +1,6 @@
 from google.appengine.ext import db
+import logging
+from handler import bloghandler
 
 class User(db.Model):
     """User DB Model of datastore
@@ -17,7 +19,7 @@ class User(db.Model):
     @classmethod
     def register(cls, name, password, email=None):
         """This Method Store User Information in DB"""
-        pass_hash = hash_password(name, password)
+        pass_hash = bloghandler.hash_password(name, password)
         user = User(username=name, pass_hash=pass_hash, email=email)
         return user
 
@@ -32,5 +34,5 @@ class User(db.Model):
         """This Method is used to validate username and password of user"""
         logging.info("Logging Method")
         u = cls.by_name(name)
-        if u and valid_pw(name, pw, u.pass_hash):
+        if u and bloghandler.valid_pw(name, pw, u.pass_hash):
             return u

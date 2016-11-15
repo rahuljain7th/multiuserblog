@@ -1,5 +1,6 @@
 from google.appengine.ext import db
 from user import User
+import logging
 
 class LikeBlog(db.Model):
     """Like Table created by DB to store
