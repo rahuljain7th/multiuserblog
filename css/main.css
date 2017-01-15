@@ -115,3 +115,12 @@ h6 {
 .blogDescription,p {
     word-wrap: break-word;
 }
+  /* Extra Small Devices, Phones */
+    @media only screen and (max-width : 780px) {
+        header {
+            height: auto;
+        }
+        .headernav {
+            float: left;
+        }
+    }
